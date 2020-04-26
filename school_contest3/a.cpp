@@ -1,52 +1,29 @@
-#include <bits/stdc++.h>
-#define endl '\n'
+#include <iostream>
+
 using namespace std;
-
-static int path=0,M,N;
-int Count(int,int,int);
+int dp[105][105][105] = {0};
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
-	
-		cin>>N>>M;
-                Count(1,1,1);
-                cout<<path<<endl;
+    int n, m, i, j, k;
+    cin >> n >> m;
 
-	return 0;
-}
-
-int Count(int n,int m,int floor){
-        if(floor==100){
-                 return path++;
+    dp[0][0][0] = 1;
+    for (i = 0; i < 100; i++) {
+        for (j = 0; j < m; j++) {
+            for (k = 0; k < n; k++) {
+                if (j && i != 99) dp[i][j][k] += dp[i][j - 1][k];
+                if (k && i != 99) dp[i][j][k] += dp[i][j][k - 1];
+                if (i && k && (i != 74)) dp[i][j][k] += dp[i - 1][j][k - 1];
+                if (i > 1 && (i != 75)) dp[i][j][k] += dp[i - 2][j][k];
+                dp[i][j][k] %= 48763;
+            }
         }
-        else if(floor<99){ 
-                if(floor==74)return 0;
-                
-                return Count(n,m,floor+2);
-                
-                 if(m<M){
-                        cout<<"a"<<endl;
-                        Count(n,m+1,floor);
-                }
-                else if(n<N)
-                {
-                        cout<<"b"<<endl;
-                        Count(n+1,m,floor);
-                        Count(n+1,m,floor+1);
-                }
-                
-
+    }
+    int ans = 0;
+    for (j = 0; j < m; j++) {
+        for (k = 0; k < n; k++) {
+            ans += dp[99][j][k];
         }
-        
-        else{
-                if(m<M){
-                        Count(n,m+1,floor);
-                }
-                else if(n<N)
-                {
-                        Count(n+1,m,floor);
-                        Count(n+1,m,floor+1);
-                }
-        }
-        return;
+    }
+    cout << ans % 48763 << endl;
+    return 0;
 }

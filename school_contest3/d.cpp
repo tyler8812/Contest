@@ -1,48 +1,21 @@
-#include <bits/stdc++.h>
-#define endl '\n'
+#include <iostream>
 using namespace std;
 
-static int path=0,M,N;
-void Count(int,int,int);
+long long dp[1001][1001];
+
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
-	list <int> a;
-        list<int>::iterator it, location;
-        int n;
-        int temp;
-        int aa, bb;
-        long long sum = 0;
-        int min = 2*1e9;
-        cin>>n;
-        while (n--)
-        {
-                cin>>temp;
-                a.push_back(temp);
+    ios::sync_with_stdio(0), cin.tie(0);
+    int n, a[1001];
+    cin >> n;
+    a[0] = 0;
+    for(int i = 1; i <= n; i++)
+        cin >> a[i], a[i] += a[i - 1];
+    for(int i = 2; i <= n; i++)
+        for(int j = 0; j + i <= n; j++){
+            dp[j][j + i] = 1e9;
+            for(int k = j + 1; k < j + i; k++)
+                dp[j][j + i] = min(dp[j][j + i], dp[j][k] + dp[k][j + i]);
+            dp[j][j + i] += a[j + i] - a[j];
         }
-
-        while(a.size() > 1){
-                min = 2*1e9;
-                for(it = a.begin(); it!= --a.end();++it){
-                        aa = *it;
-                        bb = *(++it);
-                        --it;
-                        // cout<<aa<<" "<<bb<<endl;
-
-                        if(aa+bb< min){
-                               location = it; 
-                               min = aa+bb;
-                        }
-
-                }
-                // cout<<min;
-                sum += min;
-                *location = min;
-                a.erase(++location);               
-
-        }
-        cout<<sum;
-
-
-	return 0;
+    cout << dp[0][n] << "\n";
 }
